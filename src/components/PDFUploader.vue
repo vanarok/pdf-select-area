@@ -1,22 +1,18 @@
 <template>
-  <section class="pdf-uploader form">
-    <a href="#" class="btn" @click.prevent.stop="openPicker">Upload</a>
-    <span>or</span>
-    <label class="url">
-      <input
-        v-model="url"
-        placeholder="Enter a PDF url"
-        @keyup.enter="validateUrl"
-        @blur="validateUrl"
-         />
-    </label>
+  <section class="pdf-uploader form" style="display: flex">
+    <a href="#" class="icon" @click.prevent.stop="openPicker">
+      <IconDownload />
+    </a>
+
     <p v-if="error" class="error">
-      {{error}}
+      {{ error }}
     </p>
   </section>
 </template>
 
 <script>
+import IconDownload from "../assets/icon-download.svg";
+
 let fsClient;
 function getClient() {
   if (fsClient) {
@@ -24,18 +20,21 @@ function getClient() {
   } else {
     return import(
       /* webpackChunkName: "filestack" */
-      'filestack-js'
-      ).then(({default: filestack}) => {
+      "filestack-js"
+    ).then(({ default: filestack }) => {
       return filestack.init(process.env.VUE_APP_FILESTACK_KEY);
-    })
+    });
   }
 }
 
 export default {
+  components: {
+    IconDownload,
+  },
   props: {
     documentError: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   data() {
@@ -52,15 +51,21 @@ export default {
   },
   methods: {
     openPicker() {
-      getClient().then(client => {
+      getClient().then((client) => {
         client
           .pick({
-            fromSources: ['local_file_system', 'imagesearch', 'facebook', 'instagram', 'dropbox'],
-            accept: ['.pdf'],
+            fromSources: [
+              "local_file_system",
+              "imagesearch",
+              "facebook",
+              "instagram",
+              "dropbox",
+            ],
+            accept: [".pdf"],
             maxFiles: 1,
             maxSize: 10240000,
           })
-          .then(response => this.onFilestack(response));
+          .then((response) => this.onFilestack(response));
       });
     },
 
@@ -68,17 +73,18 @@ export default {
       if (response.filesUploaded.length > 0) {
         const [file] = response.filesUploaded;
         this.url = file.url;
-        this.$emit('updated', this.url);
+        this.$emit("updated", this.url);
       }
     },
 
     validateUrl() {
-      const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
+      const URL_REGEX =
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
       if (URL_REGEX.exec(this.url)) {
         this.urlError = undefined;
-        this.$emit('updated', this.url);
+        this.$emit("updated", this.url);
       } else {
-        this.urlError = 'Please enter a valid url';
+        this.urlError = "Please enter a valid url";
       }
     },
   },

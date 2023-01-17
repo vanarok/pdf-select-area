@@ -1,27 +1,25 @@
 <template>
   <div id="app">
-
-    <PDFViewer
-      v-bind="{url}"
-      @document-errored="onDocumentErrored"
-      >
-      <PDFUploader
-        v-if="enableUploader"
-        :documentError="documentError"
-        @updated="urlUpdated"
-        slot="header"
-        class="header-item"
+    <PDFViewer v-bind="{ url }" @document-errored="onDocumentErrored">
+      <template #prepend>
+        <PDFUploader
+          v-if="enableUploader"
+          :documentError="documentError"
+          @updated="urlUpdated"
+          slot="header"
+          class="header-item"
         />
+      </template>
     </PDFViewer>
   </div>
 </template>
 
 <script>
-import PDFUploader from './components/PDFUploader.vue'
-import PDFViewer from './components/PDFViewer.vue'
+import PDFUploader from "./components/PDFUploader.vue";
+import PDFViewer from "./components/PDFViewer.vue";
 
 export default {
-  name: 'app',
+  name: "app",
 
   components: {
     PDFUploader,
@@ -30,9 +28,9 @@ export default {
 
   data() {
     return {
-      url: process.env.VUE_APP_PDF_URL,
+      url: "/default.pdf",
       documentError: undefined,
-      enableUploader: process.env.VUE_APP_UPLOAD_ENABLED === 'true',
+      enableUploader: true,
     };
   },
 
@@ -45,8 +43,7 @@ export default {
       this.documentError = e.text;
     },
   },
-
-}
+};
 </script>
 
 <style>
@@ -56,7 +53,7 @@ body {
   background-color: #606f7b;
 }
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -64,7 +61,7 @@ body {
 }
 label.form {
   color: white;
-  font-family: Monaco, 'Courier New', Courier, monospace;
+  font-family: Monaco, "Courier New", Courier, monospace;
   font-weight: bold;
   margin-bottom: 2em;
   display: block;
@@ -95,7 +92,8 @@ a.icon {
 }
 
 .box-shadow {
-  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11), 0 5px 15px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11),
+    0 5px 15px 0 rgba(0, 0, 0, 0.08);
 }
 .overflow-hidden {
   overflow: hidden;

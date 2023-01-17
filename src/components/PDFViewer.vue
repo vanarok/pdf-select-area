@@ -1,6 +1,7 @@
 <template>
   <div class="pdf-viewer">
     <header class="pdf-viewer__header box-shadow">
+      <slot name="prepend" />
       <div class="pdf-preview-toggle">
         <a @click.prevent.stop="togglePreview" class="icon"><PreviewIcon /></a>
       </div>
@@ -10,13 +11,13 @@
         @change="updateScale"
         @fit="updateFit"
         class="header-item"
-        />
+      />
 
       <PDFPaginator
         v-model="currentPage"
         :pageCount="pageCount"
         class="header-item"
-        />
+      />
 
       <slot name="header"></slot>
     </header>
@@ -28,35 +29,43 @@
       @page-focus="updateCurrentPage"
       @document-rendered="onDocumentRendered"
       @document-errored="onDocumentErrored"
-      >
-      <template v-slot:preview="{pages}">
+    >
+      <template v-slot:preview="{ pages }">
         <PDFPreview
           v-show="isPreviewEnabled"
           class="pdf-viewer__preview"
-          v-bind="{pages, scale, currentPage, pageCount, isPreviewEnabled}"
-          />
+          v-bind="{ pages, scale, currentPage, pageCount, isPreviewEnabled }"
+        />
       </template>
 
-      <template v-slot:document="{pages}">
+      <template v-slot:document="{ pages }">
         <PDFDocument
           class="pdf-viewer__document"
           :class="{ 'preview-enabled': isPreviewEnabled }"
-          v-bind="{pages, scale, optimalScale, fit, currentPage, pageCount, isPreviewEnabled}"
+          v-bind="{
+            pages,
+            scale,
+            optimalScale,
+            fit,
+            currentPage,
+            pageCount,
+            isPreviewEnabled,
+          }"
           @scale-change="updateScale"
-          />
+        />
       </template>
     </PDFData>
   </div>
 </template>
 
 <script>
-import PreviewIcon from '../assets/icon-preview.svg';
+import PreviewIcon from "../assets/icon-preview.svg";
 
-import PDFDocument from './PDFDocument';
-import PDFData from './PDFData';
-import PDFPaginator from './PDFPaginator';
-import PDFPreview from './PDFPreview';
-import PDFZoom from './PDFZoom';
+import PDFDocument from "./PDFDocument";
+import PDFData from "./PDFData";
+import PDFPaginator from "./PDFPaginator";
+import PDFPreview from "./PDFPreview";
+import PDFZoom from "./PDFZoom";
 
 function floor(value, precision) {
   const multiplier = Math.pow(10, precision || 0);
@@ -64,7 +73,7 @@ function floor(value, precision) {
 }
 
 export default {
-  name: 'PDFViewer',
+  name: "PDFViewer",
 
   components: {
     PDFDocument,
@@ -92,14 +101,14 @@ export default {
 
   methods: {
     onDocumentRendered() {
-      this.$emit('document-errored', this.url);
+      this.$emit("document-errored", this.url);
     },
 
     onDocumentErrored(e) {
-      this.$emit('document-errored', e);
+      this.$emit("document-errored", e);
     },
 
-    updateScale({scale, isOptimal = false}) {
+    updateScale({ scale, isOptimal = false }) {
       const roundedScale = floor(scale, 2);
       if (isOptimal) this.optimalScale = roundedScale;
       this.scale = roundedScale;
@@ -129,7 +138,7 @@ export default {
   },
 
   mounted() {
-    document.body.classList.add('overflow-hidden');
+    document.body.classList.add("overflow-hidden");
   },
 };
 </script>
