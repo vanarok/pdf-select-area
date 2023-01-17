@@ -28,7 +28,7 @@ export default {
 
   data() {
     return {
-      url: "/default.pdf",
+      url: "/pdf-select-area/default.pdf",
       documentError: undefined,
       enableUploader: true,
     };
